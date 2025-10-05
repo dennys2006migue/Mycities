@@ -1,19 +1,18 @@
 from fastapi import FastAPI
-from .database import engine
-from .models import Base
-from .routers import traffic, pollution, ai
+from database import engine
+from models import Base
+from routers.traffic import router as traffic_router
+from routers.pollution import router as pollution_router
+from routers.ai import router as ai_router
 
 app = FastAPI()
 
-# Crea todas las tablas en la base de datos
 Base.metadata.create_all(bind=engine)
 
-# Incluye los routers con sus prefijos
-app.include_router(traffic.router, prefix="/traffic")
-app.include_router(pollution.router, prefix="/pollution")
-app.include_router(ai.router, prefix="/ai")
+app.include_router(traffic_router, prefix="/traffic")
+app.include_router(pollution_router, prefix="/pollution")
+app.include_router(ai_router, prefix="/ai")
 
-# Endpoint raíz para verificar que el backend está funcionando
 @app.get("/")
 def root():
     return {"message": "Backend de MyCity Dashboard listo!"}
